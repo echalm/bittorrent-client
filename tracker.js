@@ -18,6 +18,36 @@ module.exports.getPeers = (torrent, callback) => {
             //3. send announce request
             const announceReq = buildAnnounceReq(connResp.connection.id);
             udpSend(socket, announceReq, url);
+        } else if (respType(response) === 'announce') {
+            //4. parse announce request
+            const announceResp = parseAnnounceResp(response);
+            //5. pass peers to callback
+            callback(announceResp.peers);
         }
-    })
+    });
+};
+
+function udpSend(socket, message, rawUrl, callback=()=>{}) {
+    const url = urlParse(rawUrl);
+    socket.send(message, 0, message.length, url.port, url.host, callback);
+}
+
+function respType(resp) {
+  // ...
+}
+
+function buildConnReq() {
+  // ...
+}
+
+function parseConnResp(resp) {
+  // ...
+}
+
+function buildAnnounceReq(connId) {
+  // ...
+}
+
+function parseAnnounceResp(resp) {
+  // ...
 }
