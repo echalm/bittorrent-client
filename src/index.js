@@ -4,8 +4,12 @@ const fs = require('fs');
 const bencode = require('bencode')
 const tracker = require('./tracker');
 const torrentParser = require('./torrent-parser');
+const download = require('./download');
 
-const torrent = torrentParser.open('puppy.torrent');
+const torrent = torrentParser.open(process.argv[2]);
+
+download(torrent);
+
 // override dead tracker:
 torrent.announce = Buffer.from('udp://tracker.opentrackr.org:1337/announce');
 console.log('[index] opened torrent, announce =', torrent.announce.toString('utf8'));
