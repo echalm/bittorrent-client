@@ -3,23 +3,30 @@
 const net = require('net');
 const Buffer = require('buffer').Buffer;
 const tracker = require('./tracker');
+const message = require('./message');
+const { Handler } = require('leaflet');
 
 module.exports = torrent => {
     tracker.getPeers(torrent, peers => {
-        peers.forEach(download);
+        // 1
+        peers.forEach(peer => download(peer, torrent));
     });
 };
 
-function download(peer) {
+function download(peer) {   
     const socket = net.Socket();
     socket.on('error', console.log);
     socket.connect(peer.port, peer.ip, () => {
-        //socket.write(...)
+        // 1
+        socket.write(message.buildHandshake(torrent))
     });
-    socket.on('data', data => {
-        //handle response
-    });
+    // 2
+    onWholeMsg(socket, msg => msgHandler(msg, socket));
 }
+
+// create msgHandler here
+
+// create isHandshake here
 
 function onWholeMsg(socket, callback){
     let savedBuf = Buffer.alloc(0);
