@@ -24,9 +24,16 @@ function download(peer) {
     onWholeMsg(socket, msg => msgHandler(msg, socket));
 }
 
-// create msgHandler here
+// 2
+function msgHandler(msg, socket) {
+    if (isHandshake(msg)) socket.write(message.buildInterested());
+}
 
-// create isHandshake here
+// 3
+function isHandshake(msg) {
+    return msg.length == msg.readUInt8(0) + 49 &&
+        msg.toString('utf8', 1) === 'BitTorrent protocol';
+}
 
 function onWholeMsg(socket, callback){
     let savedBuf = Buffer.alloc(0);
